@@ -12,7 +12,6 @@
 #import "KayokoTagStore.h"
 
 #import <CoreFoundation/CoreFoundation.h>
-#import <roothide.h>
 #import <unistd.h>
 
 static NSString *const kKayokoCurrentDataDirectory = @"/var/mobile/Library/com.mlgm.kayoko";

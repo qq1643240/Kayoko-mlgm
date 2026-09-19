@@ -5,7 +5,6 @@
 
 #import "KayokoHelperLocalization.h"
 
-#import <roothide.h>
 
 static NSBundle *kayokoHelperLocalizationBundle(void) {
     static NSBundle *bundle = nil;

@@ -13,7 +13,6 @@
 
 #import <Preferences/PSSpecifier.h>
 #import <UIKit/UIKit.h>
-#import <roothide.h>
 
 @interface NSConcreteNotification : NSNotification
 @end

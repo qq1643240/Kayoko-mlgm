@@ -20,7 +20,6 @@
 #import <HBLog.h>
 #import <ImageIO/ImageIO.h>
 #import <math.h>
-#import <roothide.h>
 
 static NSTimeInterval const kKayokoPasteboardWriteConfirmationTimeout = 0.25;
 static NSTimeInterval const kKayokoSimulatedAutomaticPasteDelay = 0.2;

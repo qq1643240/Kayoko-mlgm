@@ -7,7 +7,6 @@
 #import "KayokoHistoryStore.h"
 #import "KayokoPasteboardItem.h"
 
-#import <roothide.h>
 
 static NSString *const kKayokoMigratorHistoryKey = @"history";
 static NSString *const kKayokoMigratorFavoritesKey = @"favorites";

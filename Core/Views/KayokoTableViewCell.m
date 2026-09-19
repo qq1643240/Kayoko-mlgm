@@ -265,8 +265,8 @@ static NSUInteger const kKayokoTableViewCellMaximumPreviewLineCount = 3;
                                                                                 constant:-8]
                 ]];
             } else {
-                [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] centerYAnchor]]
-                    constraintEqualToAnchor:[self centerYAnchor] ]];
+                [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] centerYAnchor]
+                                                            constraintEqualToAnchor:[self centerYAnchor]] ]];
             }
         }
 
