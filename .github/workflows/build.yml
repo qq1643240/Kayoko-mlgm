@@ -35,7 +35,7 @@ jobs:
             THEOS_REPO=https://github.com/theos/theos.git
           fi
           git clone --depth 1 "$THEOS_REPO" "$HOME/theos"
-          git -C "$HOME/theos" submodule update --init vendor/dm.pl
+          git -C "$HOME/theos" submodule update --init --recursive
           mkdir -p "$HOME/theos/toolchain"
           curl -sL https://github.com/L1ghtmann/llvm-project/releases/latest/download/iOSToolchain-x86_64.tar.xz | tar -xJf - -C "$HOME/theos/toolchain/"
           test -x "$HOME/theos/toolchain/linux/iphone/bin/clang"
