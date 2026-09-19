@@ -27,16 +27,18 @@ jobs:
           curl -L -o ldid https://github.com/ProcursusTeam/ldid/releases/latest/download/ldid_linux_x86_64
           sudo install -m 755 ldid /usr/local/bin/ldid
 
-      - name: Install Theos (rootless)
-        if: matrix.scheme == 'rootless'
+      - name: Install Theos (${{ matrix.scheme }})
         run: |
-          git clone --recursive --depth 1 https://github.com/theos/theos.git "$HOME/theos"
-          echo "THEOS=$HOME/theos" >> "$GITHUB_ENV"
-
-      - name: Install Theos (roothide)
-        if: matrix.scheme == 'roothide'
-        run: |
-          git clone --recursive --depth 1 https://github.com/roothide/theos.git "$HOME/theos"
+          if [ "${{ matrix.scheme }}" = "roothide" ]; then
+            THEOS_REPO=https://github.com/roothide/theos.git
+          else
+            THEOS_REPO=https://github.com/theos/theos.git
+          fi
+          git clone --depth 1 "$THEOS_REPO" "$HOME/theos"
+          git -C "$HOME/theos" submodule update --init vendor/dm.pl
+          mkdir -p "$HOME/theos/toolchain"
+          curl -sL https://github.com/L1ghtmann/llvm-project/releases/latest/download/iOSToolchain-x86_64.tar.xz | tar -xJf - -C "$HOME/theos/toolchain/"
+          test -x "$HOME/theos/toolchain/linux/iphone/bin/clang"
           echo "THEOS=$HOME/theos" >> "$GITHUB_ENV"
 
       - name: Install iOS SDKs
