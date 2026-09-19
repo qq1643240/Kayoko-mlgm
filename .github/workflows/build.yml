@@ -20,7 +20,13 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ldid xz-utils unzip curl
+          sudo apt-get install -y xz-utils unzip curl
+
+      - name: Install ldid
+        run: |
+          curl -L -o ldid https://github.com/ProcursusTeam/ldid/releases/latest/download/ldid_linux_x86_64
+          sudo install -m 755 ldid /usr/local/bin/ldid
+          ldid -V
 
       - name: Install Theos
         run: |
