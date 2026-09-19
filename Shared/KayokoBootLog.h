@@ -1,32 +1,30 @@
-// -*- coding: utf-8 -*-
+//
 //  KayokoBootLog.h
 //  Kayoko
 //
-//  Temporary boot-stage file logger for freeze diagnosis.
+//  Temporary boot-stage logger (pure C, no ObjC/Foundation dependency) for
+//  freeze diagnosis.
 //
 
-#import <Foundation/Foundation.h>
+#ifndef KAYOKO_BOOT_LOG_H
+#define KAYOKO_BOOT_LOG_H
 
-static inline void KayokoBootLog(NSString *stage) {
-    static NSString *path = nil;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-      path = @"/var/mobile/Library/kayoko_boot.log";
-    });
-    static NSFileHandle *handle = nil;
-    @synchronized(path) {
-      if (!handle) {
-          if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
-              [@"" writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
-          }
-          handle = [NSFileHandle fileHandleForWritingAtPath:path];
-          if (handle) {
-              [handle seekToEndOfFile];
-          }
-      }
-      if (handle) {
-          NSString *line = [NSString stringWithFormat:@"%@\n", stage];
-          [handle writeData:[line dataUsingEncoding:NSUTF8StringEncoding]];
-      }
+#include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
+
+static inline void KayokoBootLog(const char *stage) {
+    int fd = open("/var/mobile/Library/kayoko_boot.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (fd < 0) {
+        fd = open("/var/tmp/kayoko_boot.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
+    }
+    if (fd >= 0) {
+        if (stage) {
+            write(fd, stage, strlen(stage));
+        }
+        write(fd, "\n", 1);
+        close(fd);
     }
 }
+
+#endif /* KAYOKO_BOOT_LOG_H */
