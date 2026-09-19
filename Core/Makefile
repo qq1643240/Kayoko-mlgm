@@ -10,6 +10,7 @@ KayokoCore_FILES += KayokoPasteTipHooks.m
 KayokoCore_FILES += ../Helper/KayokoSwipeUpGestureRecognizer.m
 KayokoCore_FILES += $(wildcard Manager/*.m Actions/*.m Controllers/*.m Coordinators/*.m DataSources/*.m Models/*.m Presentation/*.m Views/*.m)
 KayokoCore_FILES += $(wildcard ../Shared/Tags/*.m)
+KayokoCore_FILES += ../Shared/AvailabilityShim.c
 
 KayokoCore_CFLAGS += -fobjc-arc
 KayokoCore_CFLAGS += -I.

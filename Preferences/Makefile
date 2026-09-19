@@ -4,6 +4,7 @@ KayokoPreferences_USE_MODULES := 0
 
 KayokoPreferences_FILES += $(wildcard Controllers/*.m Cells/*.m Utilities/*.m)
 KayokoPreferences_FILES += $(wildcard ../Shared/Tags/*.m)
+KayokoPreferences_FILES += ../Shared/AvailabilityShim.c
 
 KayokoPreferences_CFLAGS += -fobjc-arc
 KayokoPreferences_CFLAGS += -I.
