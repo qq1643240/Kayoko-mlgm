@@ -4,6 +4,7 @@
 //
 
 #import "KayokoHelperLocalization.h"
+#import "KayokoJailbreakPaths.h"
 
 
 static NSBundle *kayokoHelperLocalizationBundle(void) {

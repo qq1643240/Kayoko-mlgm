@@ -4,6 +4,7 @@
 //
 
 #import "KayokoPostinstallUpdater.h"
+#import "KayokoJailbreakPaths.h"
 #import "KayokoCopyLogImporter.h"
 #import "KayokoCopyVaultImporter.h"
 #import "KayokoHistoryMigrator.h"

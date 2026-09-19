@@ -4,6 +4,7 @@
 //
 
 #import "KayokoAdvancedOptionsListController.h"
+#import "KayokoJailbreakPaths.h"
 #import "KayokoNotificationKeys.h"
 #import "KayokoPreferenceKeys.h"
 #import "KayokoRespringControllerSupport.h"

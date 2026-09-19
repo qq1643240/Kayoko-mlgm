@@ -4,6 +4,7 @@
 //
 
 #import "KayokoHistoryMigrator.h"
+#import "KayokoJailbreakPaths.h"
 #import "KayokoHistoryStore.h"
 #import "KayokoPasteboardItem.h"
 

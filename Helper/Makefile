@@ -17,6 +17,7 @@ KayokoHelper_FILES += KayokoSwipeUpHooks.m
 
 KayokoHelper_CFLAGS += -fobjc-arc
 KayokoHelper_CFLAGS += -I../Preferences
+KayokoHelper_CFLAGS += -I../Shared
 
 KayokoHelper_FRAMEWORKS += CoreGraphics
 KayokoHelper_FRAMEWORKS += QuartzCore
@@ -25,6 +26,7 @@ KayokoHelper_FRAMEWORKS += AudioToolbox
 
 KayokoHelper_LIBRARIES += substrate
 ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
+KayokoHelper_CFLAGS += -DKAYOKO_SCHEME_ROOTHIDE=1
 KayokoHelper_LIBRARIES += roothide
 endif
 

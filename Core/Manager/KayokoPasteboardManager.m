@@ -6,6 +6,7 @@
 //
 
 #import "KayokoPasteboardManager.h"
+#import "KayokoJailbreakPaths.h"
 #import "KayokoHistoryChangeNotifier.h"
 #import "KayokoHistoryRepository.h"
 #import "KayokoKeyboardHostResolver.h"

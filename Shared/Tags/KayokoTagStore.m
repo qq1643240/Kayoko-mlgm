@@ -4,6 +4,7 @@
 //
 
 #import "KayokoTagStore.h"
+#import "KayokoJailbreakPaths.h"
 #import "KayokoTag.h"
 
 

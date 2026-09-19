@@ -24,6 +24,7 @@ KayokoCore_CFLAGS += -IModels
 KayokoCore_CFLAGS += -IPresentation
 KayokoCore_CFLAGS += -IViews
 KayokoCore_CFLAGS += -I../Shared/Tags
+KayokoCore_CFLAGS += -I../Shared
 
 KayokoCore_FRAMEWORKS += AudioToolbox
 KayokoCore_FRAMEWORKS += AVFoundation
@@ -37,7 +38,9 @@ KayokoCore_PRIVATE_FRAMEWORKS += CoreServices
 
 KayokoCore_LIBRARIES += sqlite3
 KayokoCore_LIBRARIES += substrate
+
 ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
+KayokoCore_CFLAGS += -DKAYOKO_SCHEME_ROOTHIDE=1
 KayokoCore_LIBRARIES += roothide
 endif
 

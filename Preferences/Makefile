@@ -12,6 +12,7 @@ KayokoPreferences_CFLAGS += -IControllers
 KayokoPreferences_CFLAGS += -ICells
 KayokoPreferences_CFLAGS += -IUtilities
 KayokoPreferences_CFLAGS += -I../Shared/Tags
+KayokoPreferences_CFLAGS += -I../Shared
 
 KayokoPreferences_FRAMEWORKS += CoreGraphics
 KayokoPreferences_FRAMEWORKS += QuartzCore
@@ -35,6 +36,7 @@ KayokoPreferences_PRIVATE_FRAMEWORKS += Preferences
 KayokoPreferences_PRIVATE_FRAMEWORKS += SpringBoardServices
 
 ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
+KayokoPreferences_CFLAGS += -DKAYOKO_SCHEME_ROOTHIDE=1
 KayokoPreferences_LIBRARIES += roothide
 endif
 

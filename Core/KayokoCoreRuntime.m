@@ -4,6 +4,7 @@
 //
 
 #import "KayokoCoreRuntime.h"
+#import "KayokoJailbreakPaths.h"
 #import "KayokoKeyboardHostResolver.h"
 #import "KayokoMainViewController.h"
 #import "KayokoHeaderButtonStyle.h"

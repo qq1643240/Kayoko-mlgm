@@ -20,6 +20,7 @@ kayoko_updater_CFLAGS += -fobjc-arc
 kayoko_updater_CFLAGS += -I../Core/Manager
 kayoko_updater_CFLAGS += -I../Preferences
 kayoko_updater_CFLAGS += -I../Shared/Tags
+kayoko_updater_CFLAGS += -I../Shared
 
 kayoko_updater_FRAMEWORKS += CoreGraphics
 kayoko_updater_FRAMEWORKS += ImageIO
@@ -27,6 +28,7 @@ kayoko_updater_FRAMEWORKS += Security
 kayoko_updater_FRAMEWORKS += UIKit
 kayoko_updater_LIBRARIES += sqlite3
 ifeq ($(THEOS_PACKAGE_SCHEME),roothide)
+kayoko_updater_CFLAGS += -DKAYOKO_SCHEME_ROOTHIDE=1
 kayoko_updater_LIBRARIES += roothide
 endif
 
