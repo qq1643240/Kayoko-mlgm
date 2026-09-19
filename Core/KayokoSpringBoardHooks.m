@@ -11,6 +11,8 @@
 #import <math.h>
 #import <objc/runtime.h>
 
+#import "../Shared/KayokoBootLog.h"
+
 #import "KayokoCoreRuntime.h"
 #import "KayokoNotificationKeys.h"
 #import "KayokoPreferenceKeys.h"
@@ -735,7 +737,9 @@ CHOptimizedMethod3(self, void, FBScene, updateSettings, UIApplicationSceneSettin
 #pragma mark - Entrypoint
 
 + (void)installHooks {
+    KayokoBootLog(@"SBH:0 installStatusBarHooks");
     [self installStatusBarHooks];
+    KayokoBootLog(@"SBH:1 status bar ok");
 
     CHLoadClass_(&SpringBoard$, NSClassFromString(@"SpringBoard"));
     class_addMethod(CHClass(SpringBoard), @selector(kayokoHandleExternalKeyboardShortcut:),
@@ -743,22 +747,34 @@ CHOptimizedMethod3(self, void, FBScene, updateSettings, UIApplicationSceneSettin
 
     CHHook1(SpringBoard, applicationDidFinishLaunching);
     CHHook0(SpringBoard, keyCommands);
+    KayokoBootLog(@"SBH:2 springboard hooks ok");
 
     [self installHomeScreenHooks];
+    KayokoBootLog(@"SBH:3 home screen");
     [self installAppSwitcherHooks];
+    KayokoBootLog(@"SBH:4 app switcher");
     [self installLockScreenTransitionHooks];
+    KayokoBootLog(@"SBH:5 lock screen");
     [self installSpotlightHooks];
+    KayokoBootLog(@"SBH:6 spotlight");
     [self installLibrarySearchHooks];
+    KayokoBootLog(@"SBH:7 library search");
     [self installApplicationMetadataHooks];
+    KayokoBootLog(@"SBH:8 app metadata");
     [self installRotationObserver];
+    KayokoBootLog(@"SBH:9 rotation");
     [self installSceneSettingsHooks];
+    KayokoBootLog(@"SBH:10 scene settings");
     [self installSystemGestureHooks];
+    KayokoBootLog(@"SBH:11 system gestures");
 
     KayokoCoreRuntime *runtime = [KayokoCoreRuntime sharedRuntime];
     if ((runtime.activationMethod & kActivationMethodSwipeUp) &&
         runtime.gestureRecognizerMode == kKayokoGestureRecognizerModeSystem) {
+        KayokoBootLog(@"SBH:12 system swipe up");
         [self installSystemSwipeUpHooks];
     }
+    KayokoBootLog(@"SBH:13 done");
 }
 
 @end

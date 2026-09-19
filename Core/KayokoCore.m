@@ -12,6 +12,8 @@
 
 #import <CoreFoundation/CoreFoundation.h>
 
+#import "../Shared/KayokoBootLog.h"
+
 typedef NS_ENUM(NSUInteger, KayokoCoreProcessKind) {
     KayokoCoreProcessKindUnsupported = 0,
     KayokoCoreProcessKindSpringBoard,
@@ -236,8 +238,11 @@ static void kayokoCorePasteTipPreferencesReloadCallback(CFNotificationCenterRef 
 #pragma mark - Installation
 
 + (void)installForSpringBoard {
+    KayokoBootLog(@"SB:0 enter installForSpringBoard");
     KayokoCoreRuntime *runtime = [KayokoCoreRuntime sharedRuntime];
+    KayokoBootLog(@"SB:1 sharedRuntime ok");
     [runtime loadPreferences];
+    KayokoBootLog(@"SB:2 loadPreferences ok");
     [self addDarwinObserverForName:(__bridge CFStringRef)kKayokoNotificationKeyCoreCheckpointHistory
                           callback:kayokoCoreCheckpointHistoryCallback];
     [self addDarwinObserverForName:(__bridge CFStringRef)kKayokoNotificationKeyCorePrepareMaintenance
@@ -249,12 +254,17 @@ static void kayokoCorePasteTipPreferencesReloadCallback(CFNotificationCenterRef 
     [self addDarwinObserverForName:(__bridge CFStringRef)kKayokoNotificationKeyCoreClearHistory
                           callback:kayokoCoreClearHistoryCallback];
     if (![runtime isEnabled]) {
+        KayokoBootLog(@"SB:3 disabled, return");
         return;
     }
 
+    KayokoBootLog(@"SB:4 before PasteTipHookInstaller");
     [KayokoPasteTipHookInstaller installHooks];
+    KayokoBootLog(@"SB:5 before SpringBoardHookInstaller");
     [KayokoSpringBoardHookInstaller installHooks];
+    KayokoBootLog(@"SB:6 before startLockStateObserver");
     [runtime startLockStateObserver];
+    KayokoBootLog(@"SB:7 hooks all installed");
 
     [self addDarwinObserverForName:CFSTR("com.apple.pasteboard.notify.changed")
                           callback:kayokoCorePasteboardChangedCallback];
@@ -296,14 +306,20 @@ static void kayokoCorePasteTipPreferencesReloadCallback(CFNotificationCenterRef 
 #pragma mark - Entrypoint
 
 __attribute((constructor)) static void initialize() {
+    KayokoBootLog(@"CTOR:0 enter");
     switch ([KayokoCoreProcessContext currentContext].kind) {
     case KayokoCoreProcessKindSpringBoard:
+        KayokoBootLog(@"CTOR:1 springboard detected");
         [KayokoCoreBootstrap installForSpringBoard];
+        KayokoBootLog(@"CTOR:2 springboard done");
         return;
     case KayokoCoreProcessKindDruidOrPasted:
+        KayokoBootLog(@"CTOR:1 druid/pasted detected");
         [KayokoCoreBootstrap installForDruidOrPasted];
+        KayokoBootLog(@"CTOR:2 druid/pasted done");
         return;
     case KayokoCoreProcessKindUnsupported:
+        KayokoBootLog(@"CTOR:1 unsupported, return");
         return;
     }
 }
