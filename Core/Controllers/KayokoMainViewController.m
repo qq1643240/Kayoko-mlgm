@@ -360,10 +360,6 @@ NS_ASSUME_NONNULL_END
     [[self favoritesListViewController] setAvatarTimeStyle:avatarTimeStyle];
 }
 
-- (BOOL)avatarTimeStyle {
-    return _avatarTimeStyle;
-}
-
 - (void)setClearButtonMode:(KayokoClearButtonMode)clearButtonMode {
     if (clearButtonMode != kKayokoClearButtonModeOff && clearButtonMode != kKayokoClearButtonModeHistoryOnly &&
         clearButtonMode != kKayokoClearButtonModeAlways) {

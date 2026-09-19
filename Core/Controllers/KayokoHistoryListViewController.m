@@ -121,10 +121,6 @@ NS_ASSUME_NONNULL_END
     [[self cellContentProvider] setAvatarTimeStyle:avatarTimeStyle];
 }
 
-- (BOOL)avatarTimeStyle {
-    return _avatarTimeStyle;
-}
-
 - (void)refreshSearchPlaceholder {
     BOOL showsNoSearchResults = [self hasActiveSearch] && ![self isBrowsingSearchTokens] && [[self items] count] > 0 &&
                                 [[self displayedItems] count] == 0;
