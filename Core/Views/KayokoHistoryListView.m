@@ -10,6 +10,7 @@
 #import "KayokoPasteboardManager.h"
 
 static CGFloat const kKayokoHistoryListViewBaseRowHeight = 65;
+static CGFloat const kKayokoHistoryListViewAvatarTimeMinimumRowHeight = 78;
 static CGFloat const kKayokoHistoryListViewAdditionalPreviewLineHeight = 18;
 static CGFloat const kKayokoHistoryListViewDetailLineHeight = 15;
 static NSUInteger const kKayokoHistoryListViewMaximumPreviewLineCount = 3;
@@ -434,12 +435,25 @@ NS_ASSUME_NONNULL_END
     [self reloadData];
 }
 
+- (void)setAvatarTimeStyle:(BOOL)avatarTimeStyle {
+    if (_avatarTimeStyle == avatarTimeStyle) {
+        return;
+    }
+    _avatarTimeStyle = avatarTimeStyle;
+    [self updateRowHeightForCurrentDisplayOptions];
+    [self reloadData];
+}
+
 - (void)updateRowHeightForCurrentDisplayOptions {
     CGFloat detailHeight =
         [self itemDetailsMode] == kKayokoItemDetailsModeAll ? kKayokoHistoryListViewDetailLineHeight : 0;
-    [self setRowHeight:kKayokoHistoryListViewBaseRowHeight +
-                       ([self previewLineCount] - 1) * kKayokoHistoryListViewAdditionalPreviewLineHeight +
-                       detailHeight];
+    CGFloat rowHeight = kKayokoHistoryListViewBaseRowHeight +
+                        ([self previewLineCount] - 1) * kKayokoHistoryListViewAdditionalPreviewLineHeight +
+                        detailHeight;
+    if ([self avatarTimeStyle]) {
+        rowHeight = MAX(rowHeight, kKayokoHistoryListViewAvatarTimeMinimumRowHeight);
+    }
+    [self setRowHeight:rowHeight];
 }
 
 @end

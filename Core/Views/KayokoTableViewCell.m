@@ -40,8 +40,9 @@ static NSUInteger const kKayokoTableViewCellMaximumPreviewLineCount = 3;
     BOOL hasContentImageSlot = [content contentImage] || [[content thumbnailImageName] length] > 0;
     BOOL hasTagDot = [[content tagHexColor] length] > 0;
     BOOL hasContentText = [[content contentText] length] > 0;
-    return [NSString stringWithFormat:@"KayokoTableViewCell-%lu-%d-%d-%d-%d", (unsigned long)lineCount,
-                                      hasContentImageSlot, hasTagDot, hasContentText, [content showsDetail]];
+    return [NSString stringWithFormat:@"KayokoTableViewCell-%lu-%d-%d-%d-%d-%d", (unsigned long)lineCount,
+                                      hasContentImageSlot, hasTagDot, hasContentText, [content showsDetail],
+                                      [content showsAvatarTimeStyle]];
 }
 
 + (CGSize)contentImageViewSizeForPreviewLineCount:(NSUInteger)previewLineCount {
@@ -67,6 +68,7 @@ static NSUInteger const kKayokoTableViewCellMaximumPreviewLineCount = 3;
         CGSize contentImageViewSize = [[self class] contentImageViewSizeForPreviewLineCount:lineCount];
         BOOL hasContentText = [[content contentText] length] > 0;
         BOOL showsDetail = [content showsDetail];
+        BOOL avatarTimeStyle = [content showsAvatarTimeStyle];
         [self setBackgroundColor:[UIColor clearColor]];
         UIView *selectedBackgroundView = [[UIView alloc] init];
         UIColor *selectedBackgroundColor =
@@ -83,16 +85,25 @@ static NSUInteger const kKayokoTableViewCellMaximumPreviewLineCount = 3;
         [self setIconImageView:[[UIImageView alloc] init]];
         [[self iconImageView] setContentMode:UIViewContentModeScaleAspectFit];
         [[self iconImageView] setClipsToBounds:YES];
-        [[[self iconImageView] layer] setCornerRadius:10];
+        [[[self iconImageView] layer] setCornerRadius:avatarTimeStyle ? 8 : 10];
         [self addSubview:[self iconImageView]];
 
         [[self iconImageView] setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [NSLayoutConstraint activateConstraints:@[
-            [[[self iconImageView] widthAnchor] constraintEqualToConstant:40],
-            [[[self iconImageView] heightAnchor] constraintEqualToConstant:40],
-            [[[self iconImageView] centerYAnchor] constraintEqualToAnchor:[self centerYAnchor]],
-            [[[self iconImageView] leadingAnchor] constraintEqualToAnchor:[self leadingAnchor] constant:24]
-        ]];
+        if (avatarTimeStyle) {
+            [NSLayoutConstraint activateConstraints:@[
+                [[[self iconImageView] widthAnchor] constraintEqualToConstant:40],
+                [[[self iconImageView] heightAnchor] constraintEqualToConstant:40],
+                [[[self iconImageView] topAnchor] constraintEqualToAnchor:[self topAnchor] constant:10],
+                [[[self iconImageView] leadingAnchor] constraintEqualToAnchor:[self leadingAnchor] constant:16]
+            ]];
+        } else {
+            [NSLayoutConstraint activateConstraints:@[
+                [[[self iconImageView] widthAnchor] constraintEqualToConstant:40],
+                [[[self iconImageView] heightAnchor] constraintEqualToConstant:40],
+                [[[self iconImageView] centerYAnchor] constraintEqualToAnchor:[self centerYAnchor]],
+                [[[self iconImageView] leadingAnchor] constraintEqualToAnchor:[self leadingAnchor] constant:24]
+            ]];
+        }
 
         UIImage *contentImage = [content contentImage];
         NSString *thumbnailImageName = [content thumbnailImageName];
@@ -118,103 +129,145 @@ static NSUInteger const kKayokoTableViewCellMaximumPreviewLineCount = 3;
             ]];
         }
 
-        [self setHeaderLabel:[[UILabel alloc] init]];
-        [[self headerLabel] setFont:[UIFont systemFontOfSize:16 weight:UIFontWeightMedium]];
-        [[self headerLabel] setTextColor:[UIColor labelColor]];
-        [[self headerLabel] setLineBreakMode:NSLineBreakByTruncatingTail];
-        [[self headerLabel] setContentHuggingPriority:UILayoutPriorityDefaultHigh
-                                              forAxis:UILayoutConstraintAxisHorizontal];
-        [[self headerLabel] setContentCompressionResistancePriority:UILayoutPriorityDefaultLow
-                                                            forAxis:UILayoutConstraintAxisHorizontal];
-        [self addSubview:[self headerLabel]];
-
-        [[self headerLabel] setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] leadingAnchor]
-                                                    constraintEqualToAnchor:[[self iconImageView] trailingAnchor]
-                                                                   constant:16] ]];
-
         NSLayoutXAxisAnchor *textTrailingAnchor =
             [self contentImageView] ? [[self contentImageView] leadingAnchor] : [self trailingAnchor];
         CGFloat textTrailingConstant = [self contentImageView] ? -16 : -24;
 
-        if ([[content tagHexColor] length] > 0) {
-            [self setTagDotView:[[UIView alloc] init]];
-            [[[self tagDotView] layer] setCornerRadius:kKayokoTableViewCellTagDotSize / 2.0];
-            [self addSubview:[self tagDotView]];
-            [[self tagDotView] setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [NSLayoutConstraint activateConstraints:@[
-                [[[self tagDotView] leadingAnchor] constraintEqualToAnchor:[[self headerLabel] trailingAnchor]
-                                                                  constant:6],
-                [[[self tagDotView] widthAnchor] constraintEqualToConstant:kKayokoTableViewCellTagDotSize],
-                [[[self tagDotView] heightAnchor] constraintEqualToConstant:kKayokoTableViewCellTagDotSize],
-                [[[self tagDotView] centerYAnchor] constraintEqualToAnchor:[[self headerLabel] centerYAnchor]],
-                [[[self tagDotView] trailingAnchor] constraintLessThanOrEqualToAnchor:textTrailingAnchor
-                                                                             constant:textTrailingConstant]
-            ]];
-        } else {
-            [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] trailingAnchor]
-                                                        constraintEqualToAnchor:textTrailingAnchor
-                                                                       constant:textTrailingConstant] ]];
-        }
+        if (avatarTimeStyle) {
+            [self setAvatarTimeLabel:[[UILabel alloc] init]];
+            [[self avatarTimeLabel] setFont:[UIFont systemFontOfSize:9]];
+            [[self avatarTimeLabel] setTextColor:[UIColor tertiaryLabelColor]];
+            [[self avatarTimeLabel] setTextAlignment:NSTextAlignmentCenter];
+            [[self avatarTimeLabel] setAdjustsFontSizeToFitWidth:YES];
+            [[self avatarTimeLabel] setMinimumScaleFactor:0.7];
+            [[self avatarTimeLabel] setLineBreakMode:NSLineBreakByTruncatingTail];
+            [self addSubview:[self avatarTimeLabel]];
 
-        if (hasContentText) {
-            [self setContentLabel:[[KayokoTableViewCellPreviewLabel alloc] init]];
-            [[self contentLabel] setFont:[UIFont systemFontOfSize:14]];
-            [[self contentLabel] setTextColor:[[UIColor labelColor] colorWithAlphaComponent:0.8]];
-            [[self contentLabel] setLineBreakMode:NSLineBreakByTruncatingTail];
-            [[self contentLabel] setNumberOfLines:lineCount];
-            [self addSubview:[self contentLabel]];
-            [[self contentLabel] setTranslatesAutoresizingMaskIntoConstraints:NO];
-            CGFloat previewLabelHeight = ceil([[[self contentLabel] font] lineHeight] * lineCount);
+            [[self avatarTimeLabel] setTranslatesAutoresizingMaskIntoConstraints:NO];
             [NSLayoutConstraint activateConstraints:@[
-                [[[self contentLabel] topAnchor] constraintEqualToAnchor:[[self headerLabel] bottomAnchor] constant:2],
-                [[[self contentLabel] leadingAnchor] constraintEqualToAnchor:[[self headerLabel] leadingAnchor]],
-                [[[self contentLabel] trailingAnchor] constraintEqualToAnchor:textTrailingAnchor
-                                                                     constant:textTrailingConstant],
-                [[[self contentLabel] heightAnchor] constraintEqualToConstant:previewLabelHeight]
+                [[[self avatarTimeLabel] centerXAnchor]
+                    constraintEqualToAnchor:[[self iconImageView] centerXAnchor]],
+                [[[self avatarTimeLabel] topAnchor] constraintEqualToAnchor:[[self iconImageView] bottomAnchor]
+                                                                   constant:3],
+                [[[self avatarTimeLabel] widthAnchor] constraintEqualToConstant:64]
             ]];
-        }
 
-        if (showsDetail) {
-            [self setDetailLabel:[[UILabel alloc] init]];
-            [[self detailLabel] setFont:[UIFont systemFontOfSize:12]];
-            [[self detailLabel] setTextColor:[UIColor secondaryLabelColor]];
-            [[self detailLabel] setLineBreakMode:NSLineBreakByTruncatingTail];
-            [self addSubview:[self detailLabel]];
-            [[self detailLabel] setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [NSLayoutConstraint activateConstraints:@[
-                [[[self detailLabel] leadingAnchor] constraintEqualToAnchor:[[self headerLabel] leadingAnchor]],
-                [[[self detailLabel] trailingAnchor] constraintEqualToAnchor:textTrailingAnchor
-                                                                    constant:textTrailingConstant]
-            ]];
-        }
-
-        if (hasContentText) {
-            [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] topAnchor]
-                                                        constraintEqualToAnchor:[self topAnchor]
-                                                                       constant:showsDetail ? 13 : 12] ]];
-            if (showsDetail) {
+            if (hasContentText) {
+                [self setContentLabel:[[KayokoTableViewCellPreviewLabel alloc] init]];
+                [[self contentLabel] setFont:[UIFont systemFontOfSize:14]];
+                [[self contentLabel] setTextColor:[[UIColor labelColor] colorWithAlphaComponent:0.8]];
+                [[self contentLabel] setLineBreakMode:NSLineBreakByTruncatingTail];
+                [[self contentLabel] setNumberOfLines:lineCount];
+                [self addSubview:[self contentLabel]];
+                [[self contentLabel] setTranslatesAutoresizingMaskIntoConstraints:NO];
+                CGFloat previewLabelHeight = ceil([[[self contentLabel] font] lineHeight] * lineCount);
                 [NSLayoutConstraint activateConstraints:@[
-                    [[[self detailLabel] topAnchor] constraintEqualToAnchor:[[self contentLabel] bottomAnchor]
-                                                                   constant:2],
+                    [[[self contentLabel] leadingAnchor] constraintEqualToAnchor:[[self iconImageView] trailingAnchor]
+                                                                        constant:12],
+                    [[[self contentLabel] trailingAnchor] constraintEqualToAnchor:textTrailingAnchor
+                                                                         constant:textTrailingConstant],
+                    [[[self contentLabel] centerYAnchor] constraintEqualToAnchor:[self centerYAnchor]],
+                    [[[self contentLabel] heightAnchor] constraintEqualToConstant:previewLabelHeight]
+                ]];
+            }
+        } else {
+            [self setHeaderLabel:[[UILabel alloc] init]];
+            [[self headerLabel] setFont:[UIFont systemFontOfSize:16 weight:UIFontWeightMedium]];
+            [[self headerLabel] setTextColor:[UIColor labelColor]];
+            [[self headerLabel] setLineBreakMode:NSLineBreakByTruncatingTail];
+            [[self headerLabel] setContentHuggingPriority:UILayoutPriorityDefaultHigh
+                                                  forAxis:UILayoutConstraintAxisHorizontal];
+            [[self headerLabel] setContentCompressionResistancePriority:UILayoutPriorityDefaultLow
+                                                                forAxis:UILayoutConstraintAxisHorizontal];
+            [self addSubview:[self headerLabel]];
+
+            [[self headerLabel] setTranslatesAutoresizingMaskIntoConstraints:NO];
+            [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] leadingAnchor]
+                                                        constraintEqualToAnchor:[[self iconImageView] trailingAnchor]
+                                                                       constant:16] ]];
+
+            if ([[content tagHexColor] length] > 0) {
+                [self setTagDotView:[[UIView alloc] init]];
+                [[[self tagDotView] layer] setCornerRadius:kKayokoTableViewCellTagDotSize / 2.0];
+                [self addSubview:[self tagDotView]];
+                [[self tagDotView] setTranslatesAutoresizingMaskIntoConstraints:NO];
+                [NSLayoutConstraint activateConstraints:@[
+                    [[[self tagDotView] leadingAnchor] constraintEqualToAnchor:[[self headerLabel] trailingAnchor]
+                                                                      constant:6],
+                    [[[self tagDotView] widthAnchor] constraintEqualToConstant:kKayokoTableViewCellTagDotSize],
+                    [[[self tagDotView] heightAnchor] constraintEqualToConstant:kKayokoTableViewCellTagDotSize],
+                    [[[self tagDotView] centerYAnchor] constraintEqualToAnchor:[[self headerLabel] centerYAnchor]],
+                    [[[self tagDotView] trailingAnchor] constraintLessThanOrEqualToAnchor:textTrailingAnchor
+                                                                                 constant:textTrailingConstant]
+                ]];
+            } else {
+                [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] trailingAnchor]
+                                                            constraintEqualToAnchor:textTrailingAnchor
+                                                                           constant:textTrailingConstant] ]];
+            }
+
+            if (hasContentText) {
+                [self setContentLabel:[[KayokoTableViewCellPreviewLabel alloc] init]];
+                [[self contentLabel] setFont:[UIFont systemFontOfSize:14]];
+                [[self contentLabel] setTextColor:[[UIColor labelColor] colorWithAlphaComponent:0.8]];
+                [[self contentLabel] setLineBreakMode:NSLineBreakByTruncatingTail];
+                [[self contentLabel] setNumberOfLines:lineCount];
+                [self addSubview:[self contentLabel]];
+                [[self contentLabel] setTranslatesAutoresizingMaskIntoConstraints:NO];
+                CGFloat previewLabelHeight = ceil([[[self contentLabel] font] lineHeight] * lineCount);
+                [NSLayoutConstraint activateConstraints:@[
+                    [[[self contentLabel] topAnchor] constraintEqualToAnchor:[[self headerLabel] bottomAnchor]
+                                                                    constant:2],
+                    [[[self contentLabel] leadingAnchor] constraintEqualToAnchor:[[self headerLabel] leadingAnchor]],
+                    [[[self contentLabel] trailingAnchor] constraintEqualToAnchor:textTrailingAnchor
+                                                                         constant:textTrailingConstant],
+                    [[[self contentLabel] heightAnchor] constraintEqualToConstant:previewLabelHeight]
+                ]];
+            }
+
+            if (showsDetail) {
+                [self setDetailLabel:[[UILabel alloc] init]];
+                [[self detailLabel] setFont:[UIFont systemFontOfSize:12]];
+                [[self detailLabel] setTextColor:[UIColor secondaryLabelColor]];
+                [[self detailLabel] setLineBreakMode:NSLineBreakByTruncatingTail];
+                [self addSubview:[self detailLabel]];
+                [[self detailLabel] setTranslatesAutoresizingMaskIntoConstraints:NO];
+                [NSLayoutConstraint activateConstraints:@[
+                    [[[self detailLabel] leadingAnchor] constraintEqualToAnchor:[[self headerLabel] leadingAnchor]],
+                    [[[self detailLabel] trailingAnchor] constraintEqualToAnchor:textTrailingAnchor
+                                                                        constant:textTrailingConstant]
+                ]];
+            }
+
+            if (hasContentText) {
+                [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] topAnchor]
+                                                            constraintEqualToAnchor:[self topAnchor]
+                                                                           constant:showsDetail ? 13 : 12] ]];
+                if (showsDetail) {
+                    [NSLayoutConstraint activateConstraints:@[
+                        [[[self detailLabel] topAnchor] constraintEqualToAnchor:[[self contentLabel] bottomAnchor]
+                                                                       constant:2],
+                        [[[self detailLabel] bottomAnchor] constraintLessThanOrEqualToAnchor:[self bottomAnchor]
+                                                                                    constant:-8]
+                    ]];
+                } else {
+                    [NSLayoutConstraint activateConstraints:@[ [[[self contentLabel] bottomAnchor]
+                                                                constraintLessThanOrEqualToAnchor:[self bottomAnchor]
+                                                                                         constant:-10] ]];
+                }
+            } else if (showsDetail) {
+                [NSLayoutConstraint activateConstraints:@[
+                    [[[self headerLabel] centerYAnchor] constraintEqualToAnchor:[self centerYAnchor] constant:-8],
+                    [[[self headerLabel] topAnchor] constraintGreaterThanOrEqualToAnchor:[self topAnchor] constant:8],
+                    [[[self detailLabel] topAnchor] constraintEqualToAnchor:[[self headerLabel] bottomAnchor]
+                                                                   constant:1],
                     [[[self detailLabel] bottomAnchor] constraintLessThanOrEqualToAnchor:[self bottomAnchor]
                                                                                 constant:-8]
                 ]];
             } else {
-                [NSLayoutConstraint activateConstraints:@[ [[[self contentLabel] bottomAnchor]
-                                                            constraintLessThanOrEqualToAnchor:[self bottomAnchor]
-                                                                                     constant:-10] ]];
+                [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] centerYAnchor]]
+                    constraintEqualToAnchor:[self centerYAnchor] ]];
             }
-        } else if (showsDetail) {
-            [NSLayoutConstraint activateConstraints:@[
-                [[[self headerLabel] centerYAnchor] constraintEqualToAnchor:[self centerYAnchor] constant:-8],
-                [[[self headerLabel] topAnchor] constraintGreaterThanOrEqualToAnchor:[self topAnchor] constant:8],
-                [[[self detailLabel] topAnchor] constraintEqualToAnchor:[[self headerLabel] bottomAnchor] constant:1],
-                [[[self detailLabel] bottomAnchor] constraintLessThanOrEqualToAnchor:[self bottomAnchor] constant:-8]
-            ]];
-        } else {
-            [NSLayoutConstraint activateConstraints:@[ [[[self headerLabel] centerYAnchor]
-                                                        constraintEqualToAnchor:[self centerYAnchor]] ]];
         }
 
         [self applyContent:content];
@@ -235,6 +288,7 @@ static NSUInteger const kKayokoTableViewCellMaximumPreviewLineCount = 3;
     [[self contentLabel] setText:nil];
     [[self detailLabel] setAttributedText:nil];
     [[self detailLabel] setText:nil];
+    [[self avatarTimeLabel] setText:nil];
     [[self contentImageView] setImage:nil];
     [[self contentImageView] setBackgroundColor:[UIColor tertiarySystemFillColor]];
 }
@@ -256,6 +310,7 @@ static NSUInteger const kKayokoTableViewCellMaximumPreviewLineCount = 3;
 
 - (void)applyContent:(KayokoTableViewCellContent *)content {
     [[self iconImageView] setImage:[content icon]];
+    [[self avatarTimeLabel] setText:[content avatarTimeText]];
 
     if ([content attributedDisplayName]) {
         NSMutableAttributedString *attributedDisplayName = [[content attributedDisplayName] mutableCopy];

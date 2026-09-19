@@ -815,8 +815,8 @@
         [[[self blurEffectView] layer] setCornerCurve:kCACornerCurveContinuous];
     }
 
-    CACornerMask cornerMask =
-        kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner | kCALayerMinXMaxYCorner | kCALayerMaxXMaxYCorner;
+    // Full-bleed panel: only the top corners are rounded; the bottom stays square.
+    CACornerMask cornerMask = kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner;
     [[self layer] setCornerRadius:radius];
     [[[self chromeClipView] layer] setCornerRadius:radius];
     [[[self blurEffectView] layer] setCornerRadius:radius];
@@ -830,7 +830,9 @@
     [[[self blurEffectView] layer] setMasksToBounds:YES];
     [[self contentContainerView] setClipsToBounds:YES];
 
-    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:radius];
+    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:self.bounds
+                                               byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight
+                                                     cornerRadii:CGSizeMake(radius, radius)];
     [[self layer] setShadowPath:path.CGPath];
     [self setCachedChromeBoundsSize:boundsSize];
     [self setHasCachedChromeAppearance:YES];

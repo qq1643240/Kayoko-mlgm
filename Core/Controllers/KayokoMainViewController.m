@@ -138,6 +138,7 @@ NS_ASSUME_NONNULL_END
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _itemDetailsMode = kKayokoPreferenceKeyItemDetailsModeDefaultValue;
+        _avatarTimeStyle = kKayokoPreferenceKeyAvatarTimeStyleDefaultValue;
         _clearButtonMode = kKayokoPreferenceKeyClearButtonModeDefaultValue;
         _kayokoSupportedInterfaceOrientations = UIInterfaceOrientationMaskAll;
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -353,6 +354,16 @@ NS_ASSUME_NONNULL_END
     [[self favoritesListViewController] setItemDetailsMode:itemDetailsMode];
 }
 
+- (void)setAvatarTimeStyle:(BOOL)avatarTimeStyle {
+    _avatarTimeStyle = avatarTimeStyle;
+    [[self historyListViewController] setAvatarTimeStyle:avatarTimeStyle];
+    [[self favoritesListViewController] setAvatarTimeStyle:avatarTimeStyle];
+}
+
+- (BOOL)avatarTimeStyle {
+    return _avatarTimeStyle;
+}
+
 - (void)setClearButtonMode:(KayokoClearButtonMode)clearButtonMode {
     if (clearButtonMode != kKayokoClearButtonModeOff && clearButtonMode != kKayokoClearButtonModeHistoryOnly &&
         clearButtonMode != kKayokoClearButtonModeAlways) {
@@ -528,9 +539,8 @@ NS_ASSUME_NONNULL_END
     CGFloat width = CGRectGetWidth(referenceFrame);
     CGFloat x = CGRectGetMinX(referenceFrame);
     if (width <= 0.0 || width >= CGRectGetWidth(bounds) - 1.0) {
-        width = MIN(kKayokoPanelFloatingMaxWidth, CGRectGetWidth(bounds) - inset * 2.0);
-        width = MAX(width, 280.0);
-        x = CGRectGetMidX(bounds) - width * 0.5;
+        width = CGRectGetWidth(bounds);
+        x = CGRectGetMinX(bounds);
     }
 
     CGFloat preferredHeight = CGRectGetHeight(referenceFrame);
@@ -1762,13 +1772,12 @@ NS_ASSUME_NONNULL_END
     CGRect currentFrame = [mainView frame];
     CGFloat inset = kKayokoPanelFloatingInset;
 
-    // Preserve floating-card width/x. Never expand note editing to full host bounds.
+    // Preserve panel width/x. Note editing follows the full-bleed panel geometry.
     CGFloat width = CGRectGetWidth(currentFrame);
     CGFloat x = CGRectGetMinX(currentFrame);
     if (width <= 0.0 || width >= CGRectGetWidth(bounds) - 1.0) {
-        width = MIN(kKayokoPanelFloatingMaxWidth, CGRectGetWidth(bounds) - inset * 2.0);
-        width = MAX(width, 280.0);
-        x = CGRectGetMidX(bounds) - width * 0.5;
+        width = CGRectGetWidth(bounds);
+        x = CGRectGetMinX(bounds);
     }
 
     CGFloat contentHeight = [[[self noteEditorViewController] noteEditorView] editingContentHeight];

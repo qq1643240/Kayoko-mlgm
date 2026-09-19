@@ -310,9 +310,8 @@ NS_ASSUME_NONNULL_END
     CGFloat width = CGRectGetWidth(referenceFrame);
     CGFloat x = CGRectGetMinX(referenceFrame);
     if (width <= 0.0 || width >= CGRectGetWidth(bounds) - 1.0) {
-        width = MIN(kKayokoPanelFloatingMaxWidth, CGRectGetWidth(bounds) - inset * 2.0);
-        width = MAX(width, 280.0);
-        x = CGRectGetMidX(bounds) - width * 0.5;
+        width = CGRectGetWidth(bounds);
+        x = CGRectGetMinX(bounds);
     }
 
     CGFloat preferredHeight = CGRectGetHeight(referenceFrame);

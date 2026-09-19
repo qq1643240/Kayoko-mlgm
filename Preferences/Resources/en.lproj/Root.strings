@@ -11,6 +11,8 @@
 "Appearance" = "Appearance";
 "Application Blacklist" = "Application Blacklist";
 "Auto Promote" = "Auto Promote";
+"Avatar & Time" = "Avatar & Time";
+"Show each item’s source app avatar with its capture time underneath, like a chat log." = "Show each item’s source app avatar with its capture time underneath, like a chat log.";
 "Automatically Paste" = "Automatically Paste";
 "Behaviors" = "Behaviors";
 "CUSTOM_TAGS" = "Custom Tags…";
@@ -38,14 +40,12 @@
 "Item details show when an item was last captured, along with its text length or image dimensions and file size." = "Item details show when an item was last captured, along with its text length or image dimensions and file size.";
 "Kayoko" = "Kayoko";
 "Kayoko entered maintenance mode before the import failed. Restart SpringBoard now to continue using Kayoko." = "Kayoko entered maintenance mode before the import failed. Restart SpringBoard now to continue using Kayoko.";
-"Made by OwnGoal Studio" = "Made by OwnGoal Studio";
 "Maximum Amount" = "Maximum Amount";
 "More" = "More";
 "Network Request Failed" = "Network Request Failed";
 "Not Now" = "Not Now";
 "Off" = "Off";
 "One-Finger Swipe Up" = "One-Finger Swipe Up";
-"OwnGoal Studio Kayoko" = "OwnGoal Studio Kayoko";
 "Play Haptic Feedback" = "Play Haptic Feedback";
 "Play Sound Effects" = "Play Sound Effects";
 "Please check the following: open Sileo → tap the avatar in the top-right corner → make sure the Havoc payment provider is signed in" = "Please check the following: open Sileo → tap the avatar in the top-right corner → make sure the Havoc payment provider is signed in";
@@ -56,7 +56,6 @@
 "Preview" = "Preview";
 "Preview Lines" = "Preview Lines";
 "Previous" = "Previous";
-"Purchase Kayoko on Havoc Marketplace to support ongoing OwnGoal Studio maintenance." = "Purchase Kayoko on Havoc Marketplace to support ongoing OwnGoal Studio maintenance.";
 "Respring" = "Respring";
 "Respring Now" = "Respring Now";
 "Respringing will restart SpringBoard and close all apps. Unsaved work may be lost." = "Respringing will restart SpringBoard and close all apps. Unsaved work may be lost.";
@@ -64,14 +63,12 @@
 "Save Images" = "Save Images";
 "Save Text" = "Save Text";
 "Server returned an invalid response. Tap the screen to retry: %@" = "Server returned an invalid response. Tap the screen to retry: %@";
-"Sharing some tweaks and apps I use myself." = "Sharing some tweaks and apps I use myself.";
 "Show Kayoko" = "Show Kayoko";
 "Single Line" = "Single Line";
 "Swipe to Select Words" = "Swipe to Select Words";
 "The data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko." = "The data was imported successfully. Restart SpringBoard now to finish the import and continue using Kayoko.";
 "The network request failed." = "The network request failed.";
 "The “Prediction Bar” method displays custom suggestions on the “More Keyboard Keyplane” (123)." = "The “Prediction Bar” method displays custom suggestions on the “More Keyboard Keyplane” (123).";
-"This build was modified by mlgm based on the OwnGoal Studio edition." = "This build was modified by mlgm based on the OwnGoal Studio edition.";
 "This option requires restarting SpringBoard to apply. Do you want to restart now?" = "This option requires restarting SpringBoard to apply. Do you want to restart now?";
 "Tools" = "Tools";
 "Touch Outside to Dismiss" = "Touch Outside to Dismiss";
@@ -87,5 +84,4 @@
 "View Priority" = "View Priority";
 "When enabled, long-press a text item in History or Favorites to enter word selection mode. Tap a word to select it, then drag across words to extend or reduce the selection." = "When enabled, long-press a text item in History or Favorites to enter word selection mode. Tap a word to select it, then drag across words to extend or reduce the selection.";
 "Wishing on a star…" = "Wishing on a star…";
-"mlgm Personal Repo" = "mlgm Personal Repo";
 "⌘⇧V External Keyboard" = "⌘⇧V External Keyboard";

@@ -16,6 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface KayokoTableViewCellContentProvider ()
 @property(nonatomic, strong) KayokoApplicationMetadataProvider *metadataProvider;
 @property(nonatomic, strong) NSRelativeDateTimeFormatter *relativeDateTimeFormatter;
+@property(nonatomic, strong) NSDateFormatter *absoluteDateTimeFormatter;
+@property(nonatomic, strong) NSDateFormatter *absoluteDateTimeWithYearFormatter;
+@property(nonatomic, strong) NSCalendar *gregorianCalendar;
 @property(nonatomic, strong) NSByteCountFormatter *byteCountFormatter;
 @property(nonatomic, strong) NSCache<NSString *, NSNumber *> *characterCountCache;
 @end
@@ -38,10 +41,31 @@ NS_ASSUME_NONNULL_END
         }
         _byteCountFormatter = [[NSByteCountFormatter alloc] init];
         [_byteCountFormatter setCountStyle:NSByteCountFormatterCountStyleFile];
+        _absoluteDateTimeFormatter = [[NSDateFormatter alloc] init];
+        [_absoluteDateTimeFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+        [_absoluteDateTimeFormatter setDateFormat:@"MM-dd HH:mm"];
+        _absoluteDateTimeWithYearFormatter = [[NSDateFormatter alloc] init];
+        [_absoluteDateTimeWithYearFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+        [_absoluteDateTimeWithYearFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+        _gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
         _characterCountCache = [[NSCache alloc] init];
         [_characterCountCache setCountLimit:256];
     }
     return self;
+}
+
+- (NSString *)absoluteTimeTextForDate:(NSDate *)date {
+    if (!date) {
+        return nil;
+    }
+
+    NSCalendar *calendar = [self gregorianCalendar];
+    NSInteger dateYear = [calendar component:NSCalendarUnitYear fromDate:date];
+    NSInteger currentYear = [calendar component:NSCalendarUnitYear fromDate:[NSDate date]];
+    if (dateYear != currentYear) {
+        return [[self absoluteDateTimeWithYearFormatter] stringFromDate:date];
+    }
+    return [[self absoluteDateTimeFormatter] stringFromDate:date];
 }
 
 - (NSString *)relativeTimeTextForDate:(NSDate *)date {
@@ -116,6 +140,8 @@ NS_ASSUME_NONNULL_END
                                    itemDetailsMode:(KayokoItemDetailsMode)itemDetailsMode
                                         searchText:(nullable NSString *)searchText {
     KayokoTableViewCellContent *content = [[KayokoTableViewCellContent alloc] init];
+    BOOL avatarTimeStyle = [self avatarTimeStyle];
+    [content setShowsAvatarTimeStyle:avatarTimeStyle];
     NSString *bundleIdentifier = [item bundleIdentifier];
     BOOL isImage = [[item imageName] length] > 0;
     NSString *contentText =
@@ -133,6 +159,10 @@ NS_ASSUME_NONNULL_END
     [content setAttributedContentText:[self attributedTextForText:contentText searchText:searchText]];
     BOOL showsDetail =
         isImage ? itemDetailsMode != kKayokoItemDetailsModeOff : itemDetailsMode == kKayokoItemDetailsModeAll;
+    if (avatarTimeStyle) {
+        [content setAvatarTimeText:[self absoluteTimeTextForDate:[item capturedAt]]];
+        showsDetail = NO;
+    }
     [content setShowsDetail:showsDetail];
     if (showsDetail) {
         NSMutableArray<NSString *> *detailComponents = [[NSMutableArray alloc] initWithCapacity:3];

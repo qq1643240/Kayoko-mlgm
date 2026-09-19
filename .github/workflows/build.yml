@@ -1,0 +1,56 @@
+name: Build Packages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build ${{ matrix.scheme }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [ rootless, roothide ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ldid xz-utils unzip curl
+
+      - name: Install Theos
+        run: |
+          git clone --depth 1 https://github.com/theos/theos.git "$HOME/theos"
+          echo "THEOS=$HOME/theos" >> "$GITHUB_ENV"
+
+      - name: Install iOS SDKs
+        run: |
+          curl -L https://github.com/theos/sdks/archive/refs/heads/master.zip -o /tmp/sdks.zip
+          unzip -q /tmp/sdks.zip -d /tmp/sdks
+          mkdir -p "$THEOS/sdks"
+          mv /tmp/sdks/sdks-master/iPhoneOS* "$THEOS/sdks/"
+          rm -rf /tmp/sdks /tmp/sdks.zip
+
+      - name: Build ${{ matrix.scheme }}
+        run: |
+          chmod +x build.sh
+          ./build.sh ${{ matrix.scheme }}
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p output
+          cp packages/*.deb output/
+          cd output
+          for f in *.deb; do sha256sum "$f" >> SHA256SUMS.txt; done
+          ls -la
+
+      - name: Upload artifact (${{ matrix.scheme }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: kayoko-${{ matrix.scheme }}
+          path: output/*
+          if-no-files-found: error

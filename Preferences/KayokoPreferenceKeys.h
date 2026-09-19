@@ -79,6 +79,7 @@ static NSString *const kKayokoPreferenceKeyPlaySoundEffects = @"PlaySoundEffects
 static NSString *const kKayokoPreferenceKeyPlayHapticFeedback = @"PlayHapticFeedback";
 static NSString *const kKayokoPreferenceKeyPreviewLineCount = @"PreviewLineCount";
 static NSString *const kKayokoPreferenceKeyItemDetailsMode = @"ItemDetailsMode";
+static NSString *const kKayokoPreferenceKeyAvatarTimeStyle = @"AvatarTimeStyle";
 static NSString *const kKayokoPreferenceKeyHeightInPoints = @"HeightInPoints";
 static NSString *const kKayokoPreferenceKeyOverlayWindowLevelMode = @"OverlayWindowLevelMode";
 static NSString *const kKayokoPreferenceKeyOverlayWindowLevel = @"OverlayWindowLevel";
@@ -112,6 +113,7 @@ static BOOL const kKayokoPreferenceKeyPlaySoundEffectsDefaultValue = YES;
 static BOOL const kKayokoPreferenceKeyPlayHapticFeedbackDefaultValue = YES;
 static NSUInteger const kKayokoPreferenceKeyPreviewLineCountDefaultValue = 1;
 static KayokoItemDetailsMode const kKayokoPreferenceKeyItemDetailsModeDefaultValue = kKayokoItemDetailsModeImagesOnly;
+static BOOL const kKayokoPreferenceKeyAvatarTimeStyleDefaultValue = NO;
 static CGFloat const kKayokoPreferenceKeyHeightInPointsDefaultValue = 420;
 static KayokoOverlayWindowLevelMode const kKayokoPreferenceKeyOverlayWindowLevelModeDefaultValue =
     kKayokoOverlayWindowLevelModeCustom;

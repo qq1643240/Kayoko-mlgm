@@ -203,6 +203,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) BOOL playHapticFeedback;
 @property(nonatomic, assign) NSUInteger previewLineCount;
 @property(nonatomic, assign) KayokoItemDetailsMode itemDetailsMode;
+@property(nonatomic, assign) BOOL avatarTimeStyle;
 @property(nonatomic, assign) CGFloat heightInPoints;
 @property(nonatomic, assign) KayokoOverlayWindowLevelMode overlayWindowLevelMode;
 @property(nonatomic, assign) CGFloat customOverlayWindowLevel;
@@ -249,6 +250,7 @@ NS_ASSUME_NONNULL_END
     if (self) {
         _previewLineCount = 1;
         _itemDetailsMode = kKayokoPreferenceKeyItemDetailsModeDefaultValue;
+        _avatarTimeStyle = kKayokoPreferenceKeyAvatarTimeStyleDefaultValue;
         _heightInPoints = 420;
         _activePresentationMode = KayokoPanelPresentationModePortraitDrawer;
         _pasteSuppressionState = [[KayokoPasteSuppressionState alloc] init];
@@ -292,13 +294,14 @@ NS_ASSUME_NONNULL_END
     CGRect bounds = [self referenceBoundsForWindow:window];
     CGFloat inset = kKayokoPanelFloatingInset;
 
-    CGFloat width = MIN(kKayokoPanelFloatingMaxWidth, CGRectGetWidth(bounds) - inset * 2.0);
-    width = MAX(width, 280.0);
-    CGFloat x = CGRectGetMidX(bounds) - width * 0.5;
+    // Full-bleed panel: span the full width and sit flush on the bottom edge,
+    // keeping only the top corners rounded.
+    CGFloat width = CGRectGetWidth(bounds);
+    CGFloat x = CGRectGetMinX(bounds);
 
-    CGFloat maxHeight = MAX(CGRectGetHeight(bounds) - inset * 2.0, 220.0);
+    CGFloat maxHeight = MAX(CGRectGetHeight(bounds) - inset, 220.0);
     CGFloat height = MIN(MAX(self.heightInPoints, 220.0), maxHeight);
-    CGFloat y = CGRectGetMaxY(bounds) - height - inset;
+    CGFloat y = CGRectGetMaxY(bounds) - height;
     return CGRectMake(x, y, width, height);
 }
 
@@ -608,6 +611,9 @@ NS_ASSUME_NONNULL_END
     if ([self.mainViewController itemDetailsMode] != self.itemDetailsMode) {
         [self.mainViewController setItemDetailsMode:self.itemDetailsMode];
     }
+    if ([self.mainViewController avatarTimeStyle] != self.avatarTimeStyle) {
+        [self.mainViewController setAvatarTimeStyle:self.avatarTimeStyle];
+    }
     if ([self.mainViewController initialViewMode] != self.initialViewMode) {
         [self.mainViewController setInitialViewMode:self.initialViewMode];
     }
@@ -671,6 +677,7 @@ NS_ASSUME_NONNULL_END
         kKayokoPreferenceKeyPlayHapticFeedback : @(kKayokoPreferenceKeyPlayHapticFeedbackDefaultValue),
         kKayokoPreferenceKeyPreviewLineCount : @(kKayokoPreferenceKeyPreviewLineCountDefaultValue),
         kKayokoPreferenceKeyItemDetailsMode : @(kKayokoPreferenceKeyItemDetailsModeDefaultValue),
+        kKayokoPreferenceKeyAvatarTimeStyle : @(kKayokoPreferenceKeyAvatarTimeStyleDefaultValue),
         kKayokoPreferenceKeyHeightInPoints : @(kKayokoPreferenceKeyHeightInPointsDefaultValue),
         kKayokoPreferenceKeyOverlayWindowLevelMode : @(kKayokoPreferenceKeyOverlayWindowLevelModeDefaultValue),
         kKayokoPreferenceKeyOverlayWindowLevel : @(kKayokoPreferenceKeyOverlayWindowLevelDefaultValue),
@@ -731,6 +738,7 @@ NS_ASSUME_NONNULL_END
         self.itemDetailsMode != kKayokoItemDetailsModeAll) {
         self.itemDetailsMode = kKayokoPreferenceKeyItemDetailsModeDefaultValue;
     }
+    self.avatarTimeStyle = [[self.preferences objectForKey:kKayokoPreferenceKeyAvatarTimeStyle] boolValue];
     self.heightInPoints = [[self.preferences objectForKey:kKayokoPreferenceKeyHeightInPoints] doubleValue];
     self.overlayWindowLevelMode =
         [[self.preferences objectForKey:kKayokoPreferenceKeyOverlayWindowLevelMode] unsignedIntegerValue];

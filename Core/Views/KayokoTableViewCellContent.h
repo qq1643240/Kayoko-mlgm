@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable) NSAttributedString *attributedContentText;
 @property(nonatomic, copy, nullable) NSAttributedString *attributedDetailText;
 @property(nonatomic, assign) BOOL showsDetail;
+@property(nonatomic, assign) BOOL showsAvatarTimeStyle;
+@property(nonatomic, copy, nullable) NSString *avatarTimeText;
 @property(nonatomic, strong, nullable) UIImage *contentImage;
 @property(nonatomic, copy, nullable) NSString *thumbnailImageName;
 @property(nonatomic, assign) NSUInteger previewLineCount;
